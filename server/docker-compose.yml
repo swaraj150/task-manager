@@ -1,0 +1,14 @@
+services:
+  db:
+    image: ankane/pgvector
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: task_manager
+      POSTGRES_USER: postgres1
+      POSTGRES_PASSWORD: postgres1
+    ports:
+      - '5433:5432'
+
+volumes:
+  postgres_data:
