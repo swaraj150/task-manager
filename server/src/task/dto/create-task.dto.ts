@@ -1,9 +1,23 @@
+import { IsString, IsNotEmpty, IsOptional, IsEnum, IsDate } from 'class-validator';
+import { Type } from 'class-transformer';
 import { TaskStatus, TaskPriority } from '../../../generated/prisma/client';
 
 export class CreateTaskDto {
-  title: string;
+  @IsString()
+  @IsNotEmpty()
+  title!: string;
+
+  @IsString()
+  @IsOptional()
   description?: string;
-  status: TaskStatus;
-  priority: TaskPriority;
-  dueDate: Date;
+
+  @IsEnum(TaskStatus)
+  status!: TaskStatus;
+
+  @IsEnum(TaskPriority)
+  priority!: TaskPriority;
+
+  @IsDate()
+  @Type(() => Date)
+  dueDate!: Date;
 }

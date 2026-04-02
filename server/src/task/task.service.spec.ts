@@ -1,5 +1,6 @@
 import { Test } from '@nestjs/testing';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { NotFoundException } from '@nestjs/common';
 import { TaskService } from './task.service';
 import { PrismaService } from 'src/prisma.service';
 import { TaskStatus, TaskPriority } from '../../generated/prisma/client';
@@ -81,11 +82,18 @@ describe('TaskService', () => {
       expect(mockPrisma.task.findUnique).toHaveBeenCalledWith({ where: { id: 'id-123' } });
       expect(result).toEqual(mockTask);
     });
+
+    it('should throw NotFoundException when task does not exist', async () => {
+      mockPrisma.task.findUnique.mockResolvedValue(null);
+
+      await expect(service.findOne('bad-id')).rejects.toThrow(NotFoundException);
+    });
   });
 
   describe('update', () => {
     it('should update a task', async () => {
       const updated = { ...mockTask, title: 'task 12' };
+      mockPrisma.task.findUnique.mockResolvedValue(mockTask);
       mockPrisma.task.update.mockResolvedValue(updated);
 
       const result = await service.update('id-123', { title: 'task 12' });
@@ -96,16 +104,29 @@ describe('TaskService', () => {
       });
       expect(result).toEqual(updated);
     });
+
+    it('should throw NotFoundException when task does not exist', async () => {
+      mockPrisma.task.findUnique.mockResolvedValue(null);
+
+      await expect(service.update('bad-id', { title: 'x' })).rejects.toThrow(NotFoundException);
+    });
   });
 
   describe('remove', () => {
     it('should delete a task', async () => {
+      mockPrisma.task.findUnique.mockResolvedValue(mockTask);
       mockPrisma.task.delete.mockResolvedValue(mockTask);
 
       const result = await service.remove('id-123');
 
       expect(mockPrisma.task.delete).toHaveBeenCalledWith({ where: { id: 'id-123' } });
       expect(result).toEqual(mockTask);
+    });
+
+    it('should throw NotFoundException when task does not exist', async () => {
+      mockPrisma.task.findUnique.mockResolvedValue(null);
+
+      await expect(service.remove('bad-id')).rejects.toThrow(NotFoundException);
     });
   });
 });
