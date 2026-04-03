@@ -23,6 +23,7 @@ const mockPrisma = {
     findUnique: vi.fn(),
     update: vi.fn(),
     delete: vi.fn(),
+    count: vi.fn(),
   },
 };
 
@@ -64,13 +65,31 @@ describe('TaskService', () => {
   });
 
   describe('findAll', () => {
-    it('should return all tasks', async () => {
+    it('should return paginated tasks with meta for page 1', async () => {
       mockPrisma.task.findMany.mockResolvedValue([mockTask]);
+      mockPrisma.task.count.mockResolvedValue(25);
+      const pagination = { page: 1, limit: 10, skip: 0 };
 
-      const result = await service.findAll(userId);
+      const result = await service.findAll(userId, pagination as any);
 
-      expect(mockPrisma.task.findMany).toHaveBeenCalledWith({ where: { userId } });
-      expect(result).toEqual([mockTask]);
+      expect(mockPrisma.task.findMany).toHaveBeenCalledWith({
+        where: { userId },
+        skip: 0,
+        take: 10,
+        orderBy: { createdAt: 'desc' },
+      });
+      expect(mockPrisma.task.count).toHaveBeenCalledWith({ where: { userId } });
+      expect(result).toEqual({
+        data: [mockTask],
+        meta: {
+          total: 25,
+          page: 1,
+          limit: 10,
+          totalPages: 3,
+          hasNextPage: true,
+          hasPrevPage: false,
+        },
+      });
     });
   });
 
