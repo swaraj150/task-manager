@@ -25,6 +25,7 @@ const mockTaskService = {
 
 describe('TaskController', () => {
   let controller: TaskController;
+  let userId: string = "user1";
 
   beforeEach(async () => {
     vi.clearAllMocks();
@@ -50,9 +51,9 @@ describe('TaskController', () => {
         dueDate: new Date('2026-04-10'),
       };
 
-      const result = await controller.create(dto);
+      const result = await controller.create(dto,userId);
 
-      expect(mockTaskService.create).toHaveBeenCalledWith(dto);
+      expect(mockTaskService.create).toHaveBeenCalledWith(dto,userId);
       expect(result).toEqual(mockTask);
     });
   });
@@ -61,9 +62,9 @@ describe('TaskController', () => {
     it('should return all tasks', async () => {
       mockTaskService.findAll.mockResolvedValue([mockTask]);
 
-      const result = await controller.findAll();
+      const result = await controller.findAll(userId);
 
-      expect(mockTaskService.findAll).toHaveBeenCalled();
+      expect(mockTaskService.findAll).toHaveBeenCalledWith(userId);
       expect(result).toEqual([mockTask]);
     });
   });
@@ -72,9 +73,9 @@ describe('TaskController', () => {
     it('should return a task by id', async () => {
       mockTaskService.findOne.mockResolvedValue(mockTask);
 
-      const result = await controller.findOne('uuid-1');
+      const result = await controller.findOne('uuid-1',userId);
 
-      expect(mockTaskService.findOne).toHaveBeenCalledWith('uuid-1');
+      expect(mockTaskService.findOne).toHaveBeenCalledWith('uuid-1',userId);
       expect(result).toEqual(mockTask);
     });
   });
@@ -84,9 +85,9 @@ describe('TaskController', () => {
       const updated = { ...mockTask, title: 'Updated' };
       mockTaskService.update.mockResolvedValue(updated);
 
-      const result = await controller.update('uuid-1', { title: 'Updated' });
+      const result = await controller.update('uuid-1', { title: 'Updated' },userId);
 
-      expect(mockTaskService.update).toHaveBeenCalledWith('uuid-1', { title: 'Updated' });
+      expect(mockTaskService.update).toHaveBeenCalledWith('uuid-1', { title: 'Updated' },userId);
       expect(result).toEqual(updated);
     });
   });
@@ -95,9 +96,9 @@ describe('TaskController', () => {
     it('should delete a task', async () => {
       mockTaskService.remove.mockResolvedValue(mockTask);
 
-      const result = await controller.remove('uuid-1');
+      const result = await controller.remove('uuid-1',userId);
 
-      expect(mockTaskService.remove).toHaveBeenCalledWith('uuid-1');
+      expect(mockTaskService.remove).toHaveBeenCalledWith('uuid-1',userId);
       expect(result).toEqual(mockTask);
     });
   });

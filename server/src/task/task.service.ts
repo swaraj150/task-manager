@@ -5,37 +5,39 @@ import { PrismaService } from 'src/prisma.service';
 
 @Injectable()
 export class TaskService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(private readonly prismaService: PrismaService) { }
 
-  create(createTaskDto: CreateTaskDto) {
+  create(createTaskDto: CreateTaskDto, userId: string) {
     return this.prismaService.task.create({
       data: {
-        title: createTaskDto.title,
-        description: createTaskDto.description,
-        status: createTaskDto.status,
-        priority: createTaskDto.priority,
-        dueDate: createTaskDto.dueDate,
+        ...createTaskDto,
+        userId: userId,
+
       },
     });
   }
 
-  findAll() {
-    return this.prismaService.task.findMany();
+  findAll(userId: string) {
+    return this.prismaService.task.findMany({
+      where: {
+        userId,
+      }
+    });
   }
 
-  async findOne(id: string) {
-    const task = await this.prismaService.task.findUnique({ where: { id } });
+  async findOne(id: string, userId: string) {
+    const task = await this.prismaService.task.findUnique({ where: { id, userId } });
     if (!task) throw new NotFoundException(`Task ${id} not found`);
     return task;
   }
 
-  async update(id: string, updateTaskDto: UpdateTaskDto) {
-    await this.findOne(id);
-    return this.prismaService.task.update({ where: { id }, data: updateTaskDto });
+  async update(id: string, updateTaskDto: UpdateTaskDto, userId: string) {
+    await this.findOne(id, userId);
+    return this.prismaService.task.update({ where: { id, userId }, data: updateTaskDto });
   }
 
-  async remove(id: string) {
-    await this.findOne(id);
-    return this.prismaService.task.delete({ where: { id } });
+  async remove(id: string, userId: string) {
+    await this.findOne(id, userId);
+    return this.prismaService.task.delete({ where: { id, userId } });
   }
 }
