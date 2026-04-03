@@ -2,7 +2,7 @@ import { Test } from '@nestjs/testing';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { TaskController } from './task.controller';
 import { TaskService } from './task.service';
-import { TaskStatus, TaskPriority } from '../../generated/prisma/client';
+import { TaskStatus, TaskPriority } from '../generated/prisma/client';
 
 const mockTask = {
   id: 'uuid-1',

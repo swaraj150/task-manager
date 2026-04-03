@@ -1,6 +1,6 @@
 import { IsString, IsNotEmpty, IsOptional, IsEnum, IsDate } from 'class-validator';
 import { Type } from 'class-transformer';
-import { TaskStatus, TaskPriority } from '../../../generated/prisma/client';
+import { TaskStatus, TaskPriority } from '../../generated/prisma/client';
 
 export class CreateTaskDto {
   @IsString()

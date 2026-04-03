@@ -2,7 +2,7 @@ import { Test } from '@nestjs/testing';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { NotFoundException } from '@nestjs/common';
 import { UserService } from './user.service';
-import { PrismaService } from 'src/prisma.service';
+import { PrismaService } from '../prisma.service';
 
 vi.mock('bcrypt', () => ({
   hash: vi.fn().mockResolvedValue('hashed_password'),

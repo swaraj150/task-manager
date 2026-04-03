@@ -2,8 +2,8 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query } f
 import { TaskService } from './task.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { AuthenticatedUser } from 'src/auth/decorators/auth-user.decorator';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { AuthenticatedUser } from '../auth/decorators/auth-user.decorator';
 import { PaginationDto } from './dto/pagination.dto';
 
 @Controller('task')
